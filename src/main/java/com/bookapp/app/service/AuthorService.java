@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,7 +44,7 @@ public class AuthorService {
     }
 
     public UpdateAuthorRequest updateAuthor(UUID id, UpdateAuthorRequest updateAuthorRequest) {
-        if (updateAuthorRequest.getName() == null || updateAuthorRequest.getName().trim().isEmpty()){
+        if (updateAuthorRequest.getName() == null || updateAuthorRequest.getName().trim().isEmpty()) {
             throw new NotValidExeption("Author Name not valid!");
         }
         Author author = authorRepository.findById(id).orElseThrow(() -> new CustomExeption("Author Author Not Found!"));

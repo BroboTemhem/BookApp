@@ -42,15 +42,20 @@ public class BookService {
             throw new NotValidExeption("Page number not valid!");
         }
 
+        Category categoryByName = categoryService.findCategoryByName(createBookRequest.getCategory());
+        Author authorByName = authorService.findAuthorByName(createBookRequest.getAuthor());
+        Language languageByName = languageService.findLanguageByName(createBookRequest.getLanguage());
+        Publisher publisherByName = publisherService.findPublisherByName(createBookRequest.getPublisher());
+
         Book createdBook = Book.builder()
                 .name(createBookRequest.getName())
                 .price(createBookRequest.getPrice())
                 .pageNumber(createBookRequest.getPageNumber())
                 .popularity(createBookRequest.getPopularity())
-                .category(categoryService.findCategoryByName(createBookRequest.getName()))
-                .author(authorService.findAuthorByName(createBookRequest.getAuthor()))
-                .language(languageService.findLanguageByName(createBookRequest.getLanguage()))
-                .publisher(publisherService.findPublisherByName(createBookRequest.getPublisher()))
+                .category(categoryByName)
+                .author(authorByName)
+                .language(languageByName)
+                .publisher(publisherByName)
                 .build();
 
         bookRepository.save(createdBook);
@@ -68,12 +73,13 @@ public class BookService {
             throw new NotValidExeption("Update Book Page is Not Valid!");
         }
 
-
         Book book = bookRepository.findById(id).orElseThrow(() -> new CustomExeption("Id not found!"));
+
         Author newAuthor = authorService.findAuthorByName(updateBookRequest.getAuthor());
         Publisher newPublisher = publisherService.findPublisherByName(updateBookRequest.getPublisher());
         Language newLanguage = languageService.findLanguageByName(updateBookRequest.getLanguage());
         Category newCategory = categoryService.findCategoryByName(updateBookRequest.getCategory());
+
         book.setAuthor(newAuthor);
         book.setLanguage(newLanguage);
         book.setPublisher(newPublisher);
