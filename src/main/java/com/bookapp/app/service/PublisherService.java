@@ -32,8 +32,12 @@ public class PublisherService {
     }
 
     public CreatePublisherRequest createPublisher(CreatePublisherRequest createPublisherRequest) {
-        if (createPublisherRequest.getName() == null || createPublisherRequest.getName().trim().isEmpty()){
+        String publisherName = createPublisherRequest.getName();
+        if (publisherName == null || publisherName.trim().isEmpty()){
             throw new NotValidExeption("Publisher Name not valid!");
+        }
+        if (publisherRepository.existsByNameContainingIgnoreCase(publisherName)){
+            throw new NotValidExeption("Publisher name already exists!");
         }
         Publisher createdPublisher = Publisher.builder()
                 .name(createPublisherRequest.getName())
@@ -43,7 +47,9 @@ public class PublisherService {
     }
 
     public UpdatePublisherRequest updatePublisher(Integer id, UpdatePublisherRequest updatePublisherRequest) {
-        if (updatePublisherRequest.getName() == null || updatePublisherRequest.getName().trim().isEmpty()){
+        String updateName = updatePublisherRequest.getName();
+        if (publisherRepository.existsByNameContainingIgnoreCase(updateName))
+        if (updateName == null || updateName.trim().isEmpty()){
             throw new NotValidExeption("Publisher Name not valid!");
         }
         Publisher updatedPublisher = publisherRepository.findById(id)
@@ -70,7 +76,7 @@ public class PublisherService {
     }
 
     protected Publisher findPublisherByName(String name){
-        return publisherRepository.findPublisherByName(name)
+        return publisherRepository.findByName(name)
                 .orElseThrow(()-> new CustomExeption("Publisher name not found!"));
     }
 

@@ -7,5 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AuthorRepository extends JpaRepository<Author,UUID> {
-    Optional<Author> findAuthorByName(String name);
+    Optional<Author> findByName(String name);
+    boolean existsByNameContainingIgnoreCase(String name);
 }

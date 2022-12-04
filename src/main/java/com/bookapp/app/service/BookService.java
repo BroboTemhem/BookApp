@@ -32,8 +32,12 @@ public class BookService {
     }
 
     public CreateBookRequest createBook(CreateBookRequest createBookRequest) {
-        if (createBookRequest.getName() == null || createBookRequest.getName().trim().isEmpty()) {
-            throw new NotValidExeption("Name not valid!");
+        String bookName = createBookRequest.getName();
+        if (bookName == null || bookName.trim().isEmpty()) {
+            throw new NotValidExeption("Book name not valid!");
+        }
+        if (bookRepository.existsByNameContainingIgnoreCase(bookName)){
+            throw new NotValidExeption("Book name already exists!");
         }
         if (createBookRequest.getPrice() < 0) {
             throw new NotValidExeption("Price not valid!");
@@ -63,8 +67,12 @@ public class BookService {
     }
 
     public UpdateBookRequest updateBook(UUID id, UpdateBookRequest updateBookRequest) {
-        if (updateBookRequest.getName() == null || updateBookRequest.getName().trim().isEmpty()){
+        String updatedBookName = updateBookRequest.getName();
+        if (updatedBookName == null || updatedBookName.trim().isEmpty()){
             throw new NotValidExeption("Update Book Name is Not Valid!");
+        }
+        if (bookRepository.existsByNameContainingIgnoreCase(updatedBookName)){
+            throw new NotValidExeption("Update Book Name is already exists!");
         }
         if (updateBookRequest.getPrice() < 0){
             throw new NotValidExeption("Update Book Price is Not Valid!");

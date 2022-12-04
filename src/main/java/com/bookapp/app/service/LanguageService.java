@@ -32,8 +32,12 @@ public class LanguageService {
     }
 
     public CreateLanguageRequest createLanguage(CreateLanguageRequest createLanguageRequest) {
-        if (createLanguageRequest.getName() == null || createLanguageRequest.getName().trim().isEmpty()){
+        String languageName = createLanguageRequest.getName();
+        if (languageName == null || languageName.trim().isEmpty()){
             throw new NotValidExeption("Language Name not valid!");
+        }
+        if (languageRepository.existsByNameContainingIgnoreCase(languageName)){
+            throw new NotValidExeption("Language Name Already Exists!");
         }
         Language createdLanguage = Language.builder()
                 .name(createLanguageRequest.getName())
@@ -43,8 +47,12 @@ public class LanguageService {
     }
 
     public UpdateLanguageRequest updateLanguage(Integer id, UpdateLanguageRequest updateLanguageRequest) {
-        if (updateLanguageRequest.getName() == null || updateLanguageRequest.getName().trim().isEmpty()){
+        String updateName = updateLanguageRequest.getName();
+        if (updateName == null || updateName.trim().isEmpty()){
             throw new NotValidExeption("Language Name not valid!");
+        }
+        if (languageRepository.existsByNameContainingIgnoreCase(updateName)){
+            throw new NotValidExeption("Language Name Already Exists!");
         }
         Language language = languageRepository.findById(id).orElseThrow(() -> new CustomExeption("Language Not Found!"));
         language.setName(updateLanguageRequest.getName());
@@ -67,7 +75,7 @@ public class LanguageService {
     }
 
     protected Language findLanguageByName(String name){
-        return languageRepository.findLanguageByName(name)
+        return languageRepository.findByName(name)
                 .orElseThrow(()-> new CustomExeption("Language name Not Found!"));
     }
 

@@ -16,4 +16,6 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
     List<Book> findByPublisherName(String publisherName);
 
     List<Book> findByCategoryName(String categoryName);
+
+    boolean existsByNameContainingIgnoreCase(String name);
 }

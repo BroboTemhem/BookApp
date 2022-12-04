@@ -32,8 +32,12 @@ public class CategoryService {
     }
 
     public CreateCategoryRequest createCategory(CreateCategoryRequest createCategoryRequest) {
-        if (createCategoryRequest.getName() == null || createCategoryRequest.getName().trim().isEmpty()){
+        String categoryName = createCategoryRequest.getName();
+        if (categoryName == null || categoryName.trim().isEmpty()){
             throw new NotValidExeption("Category Name not valid!");
+        }
+        if (categoryRepository.existsByNameContainingIgnoreCase(categoryName)){
+            throw new NotValidExeption("Category Name Already Exist!");
         }
         Category createdCategory = Category.builder()
                 .name(createCategoryRequest.getName())
@@ -43,7 +47,11 @@ public class CategoryService {
     }
 
     public UpdateCategoryRequest updateCategory(Integer id, UpdateCategoryRequest updateCategoryRequest) {
-        if (updateCategoryRequest.getName() == null || updateCategoryRequest.getName().trim().isEmpty()){
+        String updateName = updateCategoryRequest.getName();
+        if (categoryRepository.existsByNameContainingIgnoreCase(updateName)){
+            throw new NotValidExeption("Category Name Already Exist!");
+        }
+        if (updateName == null || updateName.trim().isEmpty()){
             throw new NotValidExeption("Category Name not valid!");
         }
         Category category = categoryRepository.findById(id)
@@ -70,7 +78,7 @@ public class CategoryService {
     }
 
     protected Category findCategoryByName(String name) {
-        return categoryRepository.findCategoryByName(name)
+        return categoryRepository.findByName(name)
                 .orElseThrow(() -> new CustomExeption("Category Name Not found!"));
     }
 

@@ -1,18 +1,13 @@
 package com.bookapp.app.repository;
 
-import com.bookapp.app.exeptions.CustomExeption;
 import com.bookapp.app.model.Author;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +32,7 @@ class AuthorRepositoryTest {
 
         authorRepository.save(author);
         //when
-        Optional<Author> expected = authorRepository.findAuthorByName("test");
+        Optional<Author> expected = authorRepository.findByName("test");
         //then
         assertNotNull(expected.get().getId());
         assertEquals(author.getName(),expected.get().getName());

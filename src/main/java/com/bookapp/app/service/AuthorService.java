@@ -33,8 +33,12 @@ public class AuthorService {
     }
 
     public CreateAuthorRequest createAuthor(CreateAuthorRequest createAuthorRequest) {
-        if (createAuthorRequest.getName() == null || createAuthorRequest.getName().trim().isEmpty()) {
+        String authorName = createAuthorRequest.getName();
+        if (authorName == null || authorName.trim().isEmpty()) {
             throw new NotValidExeption("Author Name not valid!");
+        }
+        if (authorRepository.existsByNameContainingIgnoreCase(authorName)){
+            throw new NotValidExeption("Author Name Already Exist!");
         }
         Author author = Author.builder()
                 .name(createAuthorRequest.getName())
@@ -44,8 +48,12 @@ public class AuthorService {
     }
 
     public UpdateAuthorRequest updateAuthor(UUID id, UpdateAuthorRequest updateAuthorRequest) {
-        if (updateAuthorRequest.getName() == null || updateAuthorRequest.getName().trim().isEmpty()) {
+        String updateName = updateAuthorRequest.getName();
+        if (updateName == null || updateName.trim().isEmpty()) {
             throw new NotValidExeption("Author Name not valid!");
+        }
+        if (authorRepository.existsByNameContainingIgnoreCase(updateName)){
+            throw new NotValidExeption("Author Name Already Exist!");
         }
         Author author = authorRepository.findById(id).orElseThrow(() -> new CustomExeption("Author Author Not Found!"));
         author.setName(updateAuthorRequest.getName());
@@ -68,7 +76,7 @@ public class AuthorService {
     }
 
     protected Author findAuthorByName(String name) {
-        return authorRepository.findAuthorByName(name)
+        return authorRepository.findByName(name)
                 .orElseThrow(() -> new CustomExeption("Author Not Found!"));
     }
 
