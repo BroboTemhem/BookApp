@@ -48,7 +48,7 @@ class BookServiceTest {
     }
 
     @Test
-    void getAllBook() {
+    void whenGetAllBookRequest() {
         bookService.getAllBook();
         verify(bookRepository).findAll();
     }
@@ -274,7 +274,7 @@ class BookServiceTest {
     }
 
     @Test
-    void deleteBook() {
+    void whenDeleteBookRequest() {
         UUID id = UUID.fromString("461319df-80ed-455c-9f7b-63416d75b256");
         Book book = new Book();
         book.setId(id);
