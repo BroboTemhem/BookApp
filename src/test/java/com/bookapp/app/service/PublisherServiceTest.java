@@ -63,6 +63,17 @@ class PublisherServiceTest {
     }
 
     @Test
+    void whenCreatePublisherNameEXISTSRequest_thenThrowExeption() {
+        CreatePublisherRequest request = new CreatePublisherRequest();
+        request.setName("test");
+        given(publisherRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
+
+        assertThrows(NotValidExeption.class, () -> publisherService.createPublisher(request));
+
+        verify(publisherRepository, never()).save(any());
+    }
+
+    @Test
     void whenCreatePublisherNameEMPTYRequest_thenThrowExeption() {
         CreatePublisherRequest request = new CreatePublisherRequest();
         request.setName("");
@@ -100,6 +111,17 @@ class PublisherServiceTest {
     }
 
     @Test
+    void whenUpdatePublisherNameEXISTSRequest() {
+        UpdatePublisherRequest request = new UpdatePublisherRequest();
+        request.setName("test");
+        given(publisherRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
+
+        assertThrows(NotValidExeption.class, () -> publisherService.updatePublisher(1, request));
+
+        verify(publisherRepository, never()).save(any());
+    }
+
+    @Test
     void whenUpdatePublisherNameEmptyRequest() {
         UpdatePublisherRequest request = new UpdatePublisherRequest();
         request.setName("");
@@ -113,7 +135,7 @@ class PublisherServiceTest {
     @Test
     void whenDeletePublisherRequest() {
         Integer id = 1;
-        Publisher publisher = new Publisher(id,"test",List.of());
+        Publisher publisher = new Publisher(id, "test", List.of());
 
         when(publisherRepository.findById(id)).thenReturn(Optional.of(publisher));
 
@@ -126,7 +148,7 @@ class PublisherServiceTest {
     @Test
     void whenGetPublisherByIdRequest() {
         Integer id = 1;
-        Publisher publisher = new Publisher(id,"test",List.of());
+        Publisher publisher = new Publisher(id, "test", List.of());
 
         when(publisherRepository.findById(id)).thenReturn(Optional.of(publisher));
 

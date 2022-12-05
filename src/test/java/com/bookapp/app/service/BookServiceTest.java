@@ -43,8 +43,11 @@ class BookServiceTest {
 
     @BeforeEach
     void setUp() {
-        bookService = new BookService(bookRepository, authorService, languageService,
-                                                                publisherService, categoryService);
+        bookService = new BookService(bookRepository,
+                                        authorService,
+                                        languageService,
+                                        publisherService,
+                                        categoryService);
     }
 
     @Test
@@ -113,6 +116,23 @@ class BookServiceTest {
         request.setCategory("testCategory");
         request.setLanguage("testLanguage");
         request.setPublisher("testPublisher");
+
+        assertThrows(NotValidExeption.class, () -> bookService.createBook(request));
+        verify(bookRepository, never()).save(any());
+    }
+
+    @Test
+    void whenCreateBookNameEXISTSRequest_thenThrowExeption() {
+        CreateBookRequest request = new CreateBookRequest();
+        request.setName("test");
+        request.setPrice(123.5);
+        request.setPageNumber(111);
+        request.setPopularity(Popularity.GOOD);
+        request.setAuthor("testAuthor");
+        request.setCategory("testCategory");
+        request.setLanguage("testLanguage");
+        request.setPublisher("testPublisher");
+        given(bookRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
 
         assertThrows(NotValidExeption.class, () -> bookService.createBook(request));
         verify(bookRepository, never()).save(any());
@@ -217,6 +237,24 @@ class BookServiceTest {
         request.setLanguage("testLanguage");
         request.setPublisher("testPublisher");
         UUID id = UUID.fromString("461319df-80ed-455c-9f7b-63416d75b256");
+
+        assertThrows(NotValidExeption.class, () -> bookService.updateBook(id, request));
+        verify(bookRepository, never()).save(any());
+    }
+
+    @Test
+    void whenUpdateBookNameEXISTSValidRequest_thenThrowExeption() {
+        UpdateBookRequest request = new UpdateBookRequest();
+        request.setName("test");
+        request.setPrice(123.5);
+        request.setPageNumber(123);
+        request.setPopularity(Popularity.GOOD);
+        request.setAuthor("testAuthor");
+        request.setCategory("testCategory");
+        request.setLanguage("testLanguage");
+        request.setPublisher("testPublisher");
+        UUID id = UUID.fromString("461319df-80ed-455c-9f7b-63416d75b256");
+        given(bookRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
 
         assertThrows(NotValidExeption.class, () -> bookService.updateBook(id, request));
         verify(bookRepository, never()).save(any());
@@ -329,8 +367,8 @@ class BookServiceTest {
     void getAllBooksByPriceBetween() {
         Double min = 10.0;
         Double max = 100.0;
-        bookService.getAllBooksByPriceBetween(min,max);
-        verify(bookRepository).findByPriceBetween(min,max);
+        bookService.getAllBooksByPriceBetween(min, max);
+        verify(bookRepository).findByPriceBetween(min, max);
     }
 
     @Test
@@ -390,16 +428,16 @@ class BookServiceTest {
         List<Book> bookList = List.of(book);
 
         List<GetAllBookResponse> responses = List.of(
-                new GetAllBookResponse(id,"testBookName",
-                                            "testAuthor",
-                                            "testPublisher",
-                                            123.5));
+                new GetAllBookResponse(id, "testBookName",
+                        "testAuthor",
+                        "testPublisher",
+                        123.5));
 
 
-        assertEquals(bookList.get(0).getId(),responses.get(0).getId());
-        assertEquals(bookList.get(0).getName(),responses.get(0).getName());
-        assertEquals(bookList.get(0).getPrice(),responses.get(0).getPrice());
-        assertEquals(bookList.get(0).getPublisher().getName(),responses.get(0).getPublisher());
-        assertEquals(bookList.get(0).getAuthor().getName(),responses.get(0).getAuthor());
+        assertEquals(bookList.get(0).getId(), responses.get(0).getId());
+        assertEquals(bookList.get(0).getName(), responses.get(0).getName());
+        assertEquals(bookList.get(0).getPrice(), responses.get(0).getPrice());
+        assertEquals(bookList.get(0).getPublisher().getName(), responses.get(0).getPublisher());
+        assertEquals(bookList.get(0).getAuthor().getName(), responses.get(0).getAuthor());
     }
 }

@@ -66,6 +66,17 @@ class LanguageServiceTest {
     }
 
     @Test
+    void whenCreateLanguageEXISTSEMPTY_thanThrowExeption() {
+        CreateLanguageRequest request = new CreateLanguageRequest();
+        request.setName("test");
+        given(languageRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
+
+        assertThrows(NotValidExeption.class, ()-> languageService.createLanguage(request));
+
+        verify(languageRepository,never()).save(any());
+    }
+
+    @Test
     void whenCreateLanguageNameNULL_thanThrowExeption() {
         CreateLanguageRequest request = new CreateLanguageRequest();
         request.setName(null);
@@ -104,6 +115,17 @@ class LanguageServiceTest {
     void whenUpdateLanguageNameNULL_thanThrowExeption() {
         UpdateLanguageRequest request = new UpdateLanguageRequest();
         request.setName(null);
+
+        assertThrows(NotValidExeption.class, ()-> languageService.updateLanguage(1,request));
+
+        verify(languageRepository,never()).save(any());
+    }
+
+    @Test
+    void whenUpdateLanguageNameEXISTS_thanThrowExeption() {
+        UpdateLanguageRequest request = new UpdateLanguageRequest();
+        request.setName("test");
+        given(languageRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
 
         assertThrows(NotValidExeption.class, ()-> languageService.updateLanguage(1,request));
 

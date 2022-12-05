@@ -70,6 +70,16 @@ class CategoryServiceTest {
     }
 
     @Test
+    void whenCreateCategoryNameEXISTSRequest_thenThrowExeption() {
+        CreateCategoryRequest request = new CreateCategoryRequest();
+        request.setName("test");
+        given(categoryRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
+
+        assertThrows(NotValidExeption.class, () -> categoryService.createCategory(request));
+        verify(categoryRepository, never()).save(any());
+    }
+
+    @Test
     void whenCreateCategoryNameNULLRequest_thenThrowExeption() {
         CreateCategoryRequest request = new CreateCategoryRequest();
         request.setName(null);
@@ -102,6 +112,17 @@ class CategoryServiceTest {
     void whenUpdateCategoryNameNULLRequst_thenThrowExeption() {
         UpdateCategoryRequest request = new UpdateCategoryRequest();
         request.setName(null);
+
+        assertThrows(NotValidExeption.class,()-> categoryService.updateCategory(1,request));
+
+        verify(categoryRepository,never()).save(any());
+    }
+
+    @Test
+    void whenUpdateCategoryEXISTSNULLRequst_thenThrowExeption() {
+        UpdateCategoryRequest request = new UpdateCategoryRequest();
+        request.setName("test");
+        given(categoryRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
 
         assertThrows(NotValidExeption.class,()-> categoryService.updateCategory(1,request));
 

@@ -48,9 +48,11 @@ public class PublisherService {
 
     public UpdatePublisherRequest updatePublisher(Integer id, UpdatePublisherRequest updatePublisherRequest) {
         String updateName = updatePublisherRequest.getName();
-        if (publisherRepository.existsByNameContainingIgnoreCase(updateName))
         if (updateName == null || updateName.trim().isEmpty()){
             throw new NotValidExeption("Publisher Name not valid!");
+        }
+        if (publisherRepository.existsByNameContainingIgnoreCase(updateName)){
+            throw new NotValidExeption("Publisher name already exists!");
         }
         Publisher updatedPublisher = publisherRepository.findById(id)
                 .orElseThrow(() -> new CustomExeption("Publisher Id not found!"));

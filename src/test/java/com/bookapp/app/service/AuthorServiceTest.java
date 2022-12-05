@@ -81,8 +81,17 @@ class AuthorServiceTest {
     }
 
     @Test
+    @DisplayName("When Create Author Not Valid Request then Thorw Exeption")
+    void whenCreateAuthorNameEXISTSRequest_thenThorwExeption2() {
+        CreateAuthorRequest request = new CreateAuthorRequest("test");
+        given(authorRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
+        assertThrows(NotValidExeption.class,()-> authorService.createAuthor(request));
+        verify(authorRepository,never()).save(any());
+    }
+
+    @Test
     @DisplayName("When Create Author Not Valid Request then Thorw Exeption2")
-    void whenCreateAuthorNotValidRequest_thenThorwExeption2() {
+    void whenCreateAuthorNotValidRequest_thenThorwExeption3() {
         assertThrows(NotValidExeption.class,()-> authorService.createAuthor(new CreateAuthorRequest("")));
         verify(authorRepository,never()).save(any());
     }
@@ -115,6 +124,18 @@ class AuthorServiceTest {
     void whenUpdateAuthorNotValidRequestEMPTY_thenThrowExeption() {
         UUID id = UUID.fromString("461319df-80ed-455c-9f7b-63416d75b256");
         UpdateAuthorRequest request = new UpdateAuthorRequest("");
+
+        assertThrows(NotValidExeption.class,()->authorService.updateAuthor(id,request));
+        verify(authorRepository,never()).save(any());
+    }
+
+    @Test
+    @DisplayName("when Update Author Not Valid Request NULL then Throw Exeption")
+    void whenUpdateAuthorNotValidRequestEXISTS_thenThrowExeption() {
+        UUID id = UUID.fromString("461319df-80ed-455c-9f7b-63416d75b256");
+        UpdateAuthorRequest request = new UpdateAuthorRequest();
+        request.setName("test");
+        given(authorRepository.existsByNameContainingIgnoreCase(request.getName())).willReturn(true);
 
         assertThrows(NotValidExeption.class,()->authorService.updateAuthor(id,request));
         verify(authorRepository,never()).save(any());
